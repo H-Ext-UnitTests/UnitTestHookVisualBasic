@@ -501,7 +501,7 @@ initFail:
         End Sub
 
         <DllExport("EXTOnVehicleRespawnProcess", CallingConvention:=CallingConvention.Cdecl)>
-        Public Shared Function EXTOnVehicleRespawnProcess(<[In]> obj_id As s_ident, <[In]> cur_object As s_object_ptr, <[In]> managedObj As Addon_API.objManagedPtr, <[In], MarshalAs(UnmanagedType.I1)> isManaged As Boolean) As <MarshalAs(UnmanagedType.I1)> Boolean
+        Public Shared Function EXTOnVehicleRespawnProcess(<[In]> obj_id As s_ident, <[In]> cur_object As s_object_ptr, <[In]> managedObj As Addon_API.objManagedPtr, <[In], MarshalAs(UnmanagedType.I1)> isManaged As Boolean) As HEXT.VEHICLE_RESPAWN
             If checkHooks.EXTOnVehicleRespawnProcess < MAX_HOOK_COUNTER Then
                 checkHooks.EXTOnVehicleRespawnProcess += 1
                 Dim output As New StringBuilder(Addon_API.ICIniFileClass.INIFILEVALUEMAX)
@@ -512,15 +512,14 @@ initFail:
                 vars(1) = objManaged_managed.objManaged_n.world.x
                 vars(2) = objManaged_managed.objManaged_n.world.y
                 vars(3) = objManaged_managed.objManaged_n.world.z
-                vars(4) = isManaged
-                pIUtil.m_formatVariantW(output, CUInt(output.Capacity), "ModelTag: {0:08X}, World X: {1:f}, Y: {2:f}, Z: {3:f}, isManaged: {4:d}", CUInt(vars.Length), vars)
+                pIUtil.m_formatVariantW(output, CUInt(output.Capacity), "ModelTag: {0:08X}, World X: {1:f}, Y: {2:f}, Z: {3:f}", CUInt(vars.Length), vars)
                 pICIniFile.m_value_set(HookNames(21), checkHooks.EXTOnVehicleRespawnProcess.ToString(), output.ToString())
             End If
-            Return True 'If set to false, it is managed by you. True for default.
+            Return HEXT.VEHICLE_RESPAWN.DEFAULT 'Look in VEHICLE_RESPAWN enum for available options to return.
         End Function
 
         <DllExport("EXTOnObjectDeleteAttempt", CallingConvention:=CallingConvention.Cdecl)>
-        Public Shared Function EXTOnObjectDeleteAttempt(<[In]> obj_id As s_ident, <[In]> cur_object As s_object_ptr, <[In]> curTicks As Integer, <[In], MarshalAs(UnmanagedType.I1)> isManaged As Boolean) As <MarshalAs(UnmanagedType.I1)> Boolean
+        Public Shared Function EXTOnObjectDeleteAttempt(<[In]> obj_id As s_ident, <[In]> cur_object As s_object_ptr, <[In]> curTicks As Integer, <[In], MarshalAs(UnmanagedType.I1)> isManaged As Boolean) As HEXT.OBJECT_ATTEMPT
             If checkHooks.EXTOnObjectDeleteAttempt < MAX_HOOK_COUNTER Then
                 checkHooks.EXTOnObjectDeleteAttempt += 1
                 Dim output As New StringBuilder(Addon_API.ICIniFileClass.INIFILEVALUEMAX)
@@ -528,11 +527,10 @@ initFail:
                 Dim cur_object_managed As New s_object_managed(cur_object)
                 vars(0) = cur_object_managed.s_object_n.ModelTag.Tag
                 vars(1) = curTicks
-                vars(2) = isManaged
-                pIUtil.m_formatVariantW(output, CUInt(output.Capacity), "ModelTag: {0:08X}, Current Ticks: {1:d}, isManaged: {2:d}", CUInt(vars.Length), vars)
+                pIUtil.m_formatVariantW(output, CUInt(output.Capacity), "ModelTag: {0:08X}, Current Ticks: {1:d}", CUInt(vars.Length), vars)
                 pICIniFile.m_value_set(HookNames(22), checkHooks.EXTOnObjectDeleteAttempt.ToString(), output.ToString())
             End If
-            Return True 'If set to false, it is managed by you. True for default.
+            Return HEXT.OBJECT_ATTEMPT.DEFAULT 'Look in OBJECT_ATTEMPT enum for available options to return.
         End Function
 
         <DllExport("EXTOnObjectDamageLookupProcess", CallingConvention:=CallingConvention.Cdecl)>
@@ -656,21 +654,20 @@ initFail:
 
         ' Featured in 0.5.3.0 and newer
         <DllExport("EXTOnObjectCreateAttempt", CallingConvention:=CallingConvention.Cdecl)>
-        Public Shared Function EXTOnObjectCreateAttempt(<[In]> plOwner As Addon_API.PlayerInfo, <[In]> object_creation As Addon_API.objCreationInfo, <[In], Out> change_object As Addon_API.objCreationInfoPtr, <[In], MarshalAs(UnmanagedType.I1)> isOverride As Boolean) As <MarshalAs(UnmanagedType.I1)> Boolean
+        Public Shared Function EXTOnObjectCreateAttempt(<[In]> plOwner As Addon_API.PlayerInfo, <[In]> object_creation As Addon_API.objCreationInfo, <[In], Out> change_object As Addon_API.objCreationInfoPtr, <[In], MarshalAs(UnmanagedType.I1)> isOverride As Boolean) As HEXT.OBJECT_ATTEMPT
             If checkHooks.EXTOnObjectCreateAttempt < MAX_HOOK_COUNTER Then
                 checkHooks.EXTOnObjectCreateAttempt += 1
                 Dim output As New StringBuilder(Addon_API.ICIniFileClass.INIFILEVALUEMAX)
-                Dim vars As Object() = New Object(5) {}
+                Dim vars As Object() = New Object(4) {}
                 vars(0) = object_creation.map_id.Tag
                 vars(1) = object_creation.parent_id.Tag
                 vars(2) = object_creation.pos.x
                 vars(3) = object_creation.pos.y
                 vars(4) = object_creation.pos.z
-                vars(5) = isOverride
-                pIUtil.m_formatVariantW(output, CUInt(output.Capacity), "map_id: {0:08X}, parent_id: {1:08X}, pos.x: {2:f}, pos.y: {3:f}, pos.z: {4:f}, isOverride: {5:d}", CUInt(vars.Length), vars)
+                pIUtil.m_formatVariantW(output, CUInt(output.Capacity), "map_id: {0:08X}, parent_id: {1:08X}, pos.x: {2:f}, pos.y: {3:f}, pos.z: {4:f}", CUInt(vars.Length), vars)
                 pICIniFile.m_value_set(HookNames(31), checkHooks.EXTOnObjectCreateAttempt.ToString(), output.ToString())
             End If
-            Return False 'Set to true will override. False for default.
+            Return HEXT.OBJECT_ATTEMPT.DEFAULT 'Look in OBJECT_ATTEMPT enum for available options to return.
         End Function
 
         'Featured in 0.5.3.2 and newer
