@@ -519,7 +519,7 @@ initFail:
         End Function
 
         <DllExport("EXTOnObjectDeleteAttempt", CallingConvention:=CallingConvention.Cdecl)>
-        Public Shared Function EXTOnObjectDeleteAttempt(<[In]> obj_id As s_ident, <[In]> cur_object As s_object_ptr, <[In]> curTicks As Integer, <[In], MarshalAs(UnmanagedType.I1)> isManaged As Boolean) As HEXT.OBJECT_ATTEMPT
+        Public Shared Function EXTOnObjectDeleteAttempt(<[In]> obj_id As s_ident, <[In]> cur_object As s_object_ptr, <[In]> curTicks As Integer) As HEXT.OBJECT_ATTEMPT
             If checkHooks.EXTOnObjectDeleteAttempt < MAX_HOOK_COUNTER Then
                 checkHooks.EXTOnObjectDeleteAttempt += 1
                 Dim output As New StringBuilder(Addon_API.ICIniFileClass.INIFILEVALUEMAX)
